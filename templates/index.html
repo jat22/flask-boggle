@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="static/style.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<title>Document</title>
+</head>
+<body>
+	<nav class="navbar  navbar-dark gb-dark justify-content-center" sytle="background-color: red">
+		<div class="info" id="score">SCORE: 0</div>
+		<div class="info" id="high-score">HIGHSCORE: {{highscore}}</div>
+		<div class="info" id="timer">TIME: 60secs</div>
+		<div class="info" id="num-plays">GAME#: {{num_plays}}</div>
+	</nav>
+	<div id="alert-container"></div>
+	<div class="container" id="board">
+		{% for y in board %}
+			<div class="row">
+				{% for x in y %}
+					<div class="col square-cell d-flex justify-content-center align-items-center">{{x}}</div>
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</div>
+	<table id="board">
+		
+	</table>
+
+	<form class="mb-3 d-flex justify-content-center">
+		<input id="word" type="text" name="word">
+		<button id="submit" class="btn btn-primary" type="submit">Submit</button>
+	</form>
+
+	<!-- <div id="result-msg"></div> -->
+	<!-- <div class="container d-flex justify-content-center ">
+		<div id="result-msg"></div>
+		<div id="score">SCORE: 0</div>
+		<div id="timer"></div>
+		<div id="num-plays"></div>
+		<div id="high-score"></div>
+	</div> -->
+	
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/jquery"></script>
+	<script src="https://unpkg.com/axios/dist/axios.js"></script>
+	<script src="static/app.js"></script>
+</body>
+</html>
+
