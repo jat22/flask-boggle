@@ -1,7 +1,7 @@
-
+const intervalID = setInterval(timer, 1000)
+let time = 15
 let score = 0
-let seen_words = []
-let time = 60
+let seenWords = []
 let canPlay = true
 
 $('#submit').on('click', submitWord);
@@ -9,62 +9,67 @@ $('#submit').on('click', submitWord);
 async function submitWord(evt){
 	evt.preventDefault()
 	if (!canPlay){return}
-	const word = $('input').val();
+	const word = ($('input').val()).toLowerCase();
 	
-	if (seen_words.includes(word)){
-		$('#alert-container').append(`<div id="alert" class="alert alert-info" role="alert">"${word}" has already been played</div>`).css('display', 'block')
-			setTimeout(function(){
-				$('#alert').remove()
-			}, 500)
-		$('input').val('')
-		return
-	} else{
-		seen_words.push(word)
-	}
+	if(alreadyGuessed(word)){return}
+	
 	const response = await axios.post('/check', { params: {'word' : word}})
 	const result = response.data.result
-	show_result(result, word)
+	showResult(result, word)
 	$('input').val('')
 }
 
-function show_result(result, word){
-	if(result === 'ok'){
-		word_len = word.length
-		if(word_len < 2){
-			$('#alert-container').append(`<div id="alert" class="alert alert-success" role="alert">${word_len} POINT</div>`).css('display', 'block')
-			setTimeout(function(){
-				$('#alert').remove()
-			}, 300)
-		}
-		else {
-			$('#alert-container').append(`<div id="alert" class="alert alert-success" role="alert">${word_len} POINTS</div>`).css('display', 'block')
-			setTimeout(function(){
-				$('#alert').remove()
-			}, 300)
-		}
-		cal_score(word)
-	}
-	else if(result === 'not-on-board'){
-		$('#alert-container').append(`<div id="alert" class="alert alert-danger" role="alert">"${word}" not on board</div>`).css('display', 'block')
-			setTimeout(function(){
-				$('#alert').remove()
-			}, 500)
-	}
-	else if(result === 'not-word'){
-		$('#alert-container').append(`<div id="alert" class="alert alert-warning" role="alert">"${word}" is not a word</div>`).css('display', 'block')
-			setTimeout(function(){
-				$('#alert').remove()
-			}, 500)
+async function send_score(score){
+	const response = await axios.post('/score', { params: {'new_score' : score}})
+	const highScore = response.data.high_score
+	const numOfPlays = response.data.num_plays
+	updateInfo('num-plays', 'GAME#', numOfPlays)
+	updateInfo('high-score', 'HIGHSCORE', highScore)
+}
+
+function alreadyGuessed(word){
+	if (seenWords.includes(word)){
+		generateAlert('info',`"${word}" has already been guessed`, 500)
+		$('input').val('')
+		return true
+	} else{
+		seenWords.push(word)
+		return false
 	}
 }
 
-function cal_score(word){
+function showResult(result, word){
+	if(result === 'ok'){
+		wordLen = word.length
+		if(wordLen < 2){
+			generateAlert('success',`${wordLen} POINT`, 300)
+		}
+		else {
+			generateAlert('success',`${wordLen} POINTS`, 300)
+		}
+		calculateScore(word)
+	}
+	else if(result === 'not-on-board'){
+		generateAlert('danger',`"${word}" not on board`, 500)
+	}
+	else if(result === 'not-word'){
+		generateAlert('warning', `"${word}" is not a word`, 500)
+	}
+}
+
+function generateAlert(type,msg,time){
+	$('#alert-container').append(
+		`<div id="alert" class="alert alert-${type}" role="alert">${msg}</div>`).css('display', 'block'
+	);
+	setTimeout(() => $('#alert').remove(), time)
+}
+
+function calculateScore(word){
 	const word_score = word.length
 	score += word_score
 	$('#score').html(`SCORE: ${score}`)
+	updateInfo('score', 'SCORE', score)
 }
-
-const intervalID = setInterval(timer, 1000)
 
 function timer(){
 	time -= 1
@@ -76,11 +81,6 @@ function timer(){
 	}
 }
 
-async function send_score(score){
-	const response = await axios.post('/score', { params: {'new_score' : score}})
-	console.log(response)
-	const highScore = response.data.high_score
-	const numOfPlays = response.data.num_plays
-	$('#num-plays').html(`GAME#: ${numOfPlays}`)
-	$('#high-score').html(`HIGHSCORE: ${highScore}`)
+function updateInfo(id, text, val){
+	$(`#${id}`).html(`${text}: ${val}`)
 }
