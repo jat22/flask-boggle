@@ -22,7 +22,6 @@ body{
 	margin-right:10px
 }
 #alert-container{
-	/* display: none; */
 	position: fixed;
 	top: 45%;
 	left: 50%;
@@ -36,31 +35,3 @@ body{
 	opacity: 0.85;
 	font-size:4rem
 }
-
-/* .alert{
-	display:none;
-	position:fixed;
-	top:50%;
-	left:50%;
-	transform: translate(-50%, -50%);
-	z-index:9999;
-} */
-
-
-/* #alert {
-	position:fixed;
-	top: 50%;
-} */
-
-/* max-width
-min-height
-
-align-items-center
-
-position: relative;
-width: 50px;
-padding-bottom:50px;
-background-color: lightgray;
-text-align: center;
-align-items: center;
-font-size: 2rem; */
