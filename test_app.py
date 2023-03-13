@@ -17,7 +17,14 @@ class FlaskTests(TestCase):
 
     def test_check_word(self):
         with app.test_client() as client:
+
+
+            # ***************************************
+            # I think that this is not working because the data structures aren't matching with how I wrote the app but not sure how to fix
+            # 
             resp = client.post('/check', { params: {'word' : 'if'}})
+
+            # *****************************************
             session['board'] = [
                 ['Z', 'Q', 'Y', 'U', 'R'],
                 ['N', 'B', 'V', 'M', 'V'],

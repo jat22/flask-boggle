@@ -30,8 +30,16 @@ def check_word():
     """
 
     data = request.get_json()
-    word = data['params']['word']
-    # word = request.form.get('word')
+
+    # ******************************************
+    # is this the problem with the test?
+
+    word = data['params']['word'] 
+    
+    # word = request.form.get('word') - tried this but doesn't work
+    # I don't think i'm understanding the way this data is being passed back and forth
+    # ******************************************
+
     board = session[BOARD]
     result = boggle_game.check_valid_word(board, word)
     return jsonify({'result' : result})
