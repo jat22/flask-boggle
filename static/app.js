@@ -1,11 +1,12 @@
 const intervalID = setInterval(timer, 1000)
-let time = 15
+let time = 60
 let score = 0
 let seenWords = []
 let canPlay = true
 
 $('#submit').on('click', submitWord);
 
+/* sends word to server to evaluate*/
 async function submitWord(evt){
 	evt.preventDefault()
 	if (!canPlay){return}
@@ -19,7 +20,8 @@ async function submitWord(evt){
 	$('input').val('')
 }
 
-async function send_score(score){
+/** updates highscore and number of plays on server */
+async function updateHighscoreAndNumPlays(score){
 	const response = await axios.post('/score', { params: {'new_score' : score}})
 	const highScore = response.data.high_score
 	const numOfPlays = response.data.num_plays
@@ -27,6 +29,7 @@ async function send_score(score){
 	updateInfo('high-score', 'HIGHSCORE', highScore)
 }
 
+/**checks if word has already been guessed */
 function alreadyGuessed(word){
 	if (seenWords.includes(word)){
 		generateAlert('info',`"${word}" has already been guessed`, 500)
@@ -38,6 +41,7 @@ function alreadyGuessed(word){
 	}
 }
 
+/** generates an alert showing feedback on guess*/
 function showResult(result, word){
 	if(result === 'ok'){
 		wordLen = word.length
@@ -57,30 +61,33 @@ function showResult(result, word){
 	}
 }
 
+/**keeps track of current game's score */
+function calculateScore(word){
+	const word_score = word.length
+	score += word_score
+	updateInfo('score', 'SCORE', score)
+}
+
+/**game timer */
+function timer(){
+	time -= 1
+	updateInfo('timer', 'TIME', time)
+	if(time === 0){
+		canPlay = false
+		clearInterval(intervalID)
+		updateHighscoreAndNumPlays(score)
+	}
+}
+
+/** helper function to generate game info html */
+function updateInfo(id, text, val){
+	$(`#${id}`).html(`${text}: ${val}`)
+}
+
+/** helper function to generate HTML for alerts */
 function generateAlert(type,msg,time){
 	$('#alert-container').append(
 		`<div id="alert" class="alert alert-${type}" role="alert">${msg}</div>`).css('display', 'block'
 	);
 	setTimeout(() => $('#alert').remove(), time)
-}
-
-function calculateScore(word){
-	const word_score = word.length
-	score += word_score
-	$('#score').html(`SCORE: ${score}`)
-	updateInfo('score', 'SCORE', score)
-}
-
-function timer(){
-	time -= 1
-	$('#timer').html(`TIME: ${time}secs`)
-	if(time === 0){
-		canPlay = false
-		clearInterval(intervalID)
-		send_score(score)
-	}
-}
-
-function updateInfo(id, text, val){
-	$(`#${id}`).html(`${text}: ${val}`)
 }
