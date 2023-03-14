@@ -18,22 +18,22 @@ def show_index():
 
     highscore = session.get('highscore', 0)
     num_plays = session.get('num_plays', 1)
+
     session[BOARD] = boggle_game.make_board()
+
     return render_template('index.html', board = session[BOARD], highscore = highscore, num_plays = num_plays)
 
-@app.route('/check', methods=['POST'])
+@app.route('/check')
 def check_word():
     """ 
         Recieves submited word, 
         excutes function to check validity 
         and returns result
     """
+    word = request.args["word"]
 
-    data = request.get_json()
-
-    word = data['params']['word']
-
-    board = session[BOARD]
+    board = session["board"]
+    # pdb.set_trace()
     result = boggle_game.check_valid_word(board, word)
     # pdb.set_trace()
     return jsonify({'result' : result})
@@ -48,7 +48,7 @@ def scores():
     """
 
     data = request.get_json()
-    new_score = data['params']['new_score']
+    new_score = data["new_score"]
 
     highscore = session.get('highscore', 0)
     num_plays = session.get('num_plays', 1)

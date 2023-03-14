@@ -17,17 +17,17 @@ class BoggleGame {
 			this.generateAlert('danger', 'No Word Was Entered', 500)
 			return
 		};
-
+   
 		if(this.alreadyGuessed(word)){return};
 		
-		const response = await axios.post('/check', { params: {'word' : word}});
+		const response = await axios.get('/check', {params: {"word" : word}});
 		const result = response.data.result;
 		this.showResult(result, word);
 		$('input').val('');
 	}
 	/** updates highscore and number of plays on server */
 	async updateHighscoreAndNumPlays(score){
-		const response = await axios.post('/score', { params: {'new_score' : score}});
+		const response = await axios.post('/score', {"new_score" : score});
 		const highScore = response.data.high_score;
 		const numOfPlays = response.data.num_plays;
 		this.updateInfo('num-plays', 'GAME#', numOfPlays);
